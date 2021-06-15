@@ -397,184 +397,224 @@
         body {
             font-family: 'Nunito', sans-serif;
         }
+
+        .parsley-errors-list li {
+            color: #FF0000FF;
+        }
     </style>
 </head>
 <body class="antialiased">
 <div class="container mt-5">
+    @include('session')
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Register') }}
-                    <span style="float: right">
-                        <a href="{{route('users.index')}}">
+                <div class="card-header">
+                    @if(request()->routeIs('users.edit'))
+                        {{__('Update')}}
+                    @else
+                        {{ __('Register') }}
+                    @endif
+                    <span style="float: right;">
+                        <a href="{{route('users.index')}}" style="margin-right:10px">
                            Import
+                        </a>
+                        <a href="{{route('users.create')}}" style="margin-right:10px">
+                            {{__('View')}}
+                        </a>
+                        <a href="{{route('download.users')}}">
+                            {{__('Download CVS File')}}
                         </a>
                     </span>
                 </div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{route('users.store')}}">
-                        @csrf
+                    @if(request()->routeIs('users.edit'))
+                        <form id="myForm" method="POST" action="{{route('users.update',$user->id)}}">
+                            @method('PUT')
+                            @else
+                                <form id="myForm" method="POST" action="{{route('users.store')}}">
+                                    @endif
+                                    @csrf
+                                    <div class="form-group row">
+                                        <label for="name"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+                                        <div class="col-md-6">
+                                            <input id="name" type="text"
+                                                   class="form-control @error('name') is-invalid @enderror" name="name"
+                                                   value="{{ $user->name ?? old('name') }}" required autocomplete="off"
+                                                   autofocus data-parsley-length="[3,30]" data-parsley-trigger="keyup">
 
-                            <div class="col-md-6">
-                                <input id="name" type="text"
-                                       class="form-control @error('name') is-invalid @enderror" name="name"
-                                       value="{{ old('name') }}" required autocomplete="name" autofocus>
-
-                                @error('name')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('name')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="name"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Gender') }}</label>
+                                    <div class="form-group row">
+                                        <label for="name"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Gender') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="name" type="text"
-                                       class="form-control @error('gender') is-invalid @enderror" name="gender"
-                                       value="{{ old('gender') }}" required autocomplete="name" autofocus>
+                                        <div class="col-md-6">
+                                            <input id="name" type="text"
+                                                   class="form-control @error('gender') is-invalid @enderror"
+                                                   name="gender"
+                                                   value="{{ $user->gender ?? old('gender') }}" required
+                                                   autocomplete="off" autofocus data-parsley-length="[3,30]"
+                                                   data-parsley-trigger="keyup">
 
-                                @error('gender')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('gender')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="name"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Phone') }}</label>
+                                    <div class="form-group row">
+                                        <label for="name"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Phone') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="phone" type="text"
-                                       class="form-control @error('phone') is-invalid @enderror" name="phone"
-                                       value="{{ old('phone') }}" required autocomplete="phone" autofocus>
+                                        <div class="col-md-6">
+                                            <input id="phone" type="text"
+                                                   class="form-control @error('phone') is-invalid @enderror"
+                                                   name="phone"
+                                                   value="{{ $user->phone ?? old('phone') }}" required
+                                                   autocomplete="off" data-parsley-length="[3,30]"
+                                                   data-parsley-trigger="keyup" autofocus>
 
-                                @error('phone')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('phone')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="email"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                                    <div class="form-group row">
+                                        <label for="email"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email"
-                                       class="form-control @error('email') is-invalid @enderror" name="email"
-                                       value="{{ old('email') }}" required autocomplete="email">
+                                        <div class="col-md-6">
+                                            <input id="email" type="email"
+                                                   class="form-control @error('email') is-invalid @enderror"
+                                                   name="email" value="{{ $user->email ?? old('email') }}" required
+                                                   autocomplete="off" data-parsley-type="email"
+                                                   data-parsley-length="[3,30]"
+                                                   data-parsley-trigger="keyup">
 
-                                @error('email')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('email')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="name"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Address') }}</label>
+                                    <div class="form-group row">
+                                        <label for="name"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Address') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="name" type="text"
-                                       class="form-control @error('address') is-invalid @enderror" name="address"
-                                       value="{{ old('address') }}" required autocomplete="name" autofocus>
+                                        <div class="col-md-6">
+                                            <input id="name" type="text"
+                                                   class="form-control @error('address') is-invalid @enderror"
+                                                   name="address"
+                                                   value="{{ $user->address ?? old('address') }}" required
+                                                   autocomplete="off" data-parsley-length="[3,30]"
+                                                   data-parsley-trigger="keyup" autofocus>
 
-                                @error('address')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('address')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="password"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Nationality') }}</label>
+                                    <div class="form-group row">
+                                        <label for="password"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Nationality') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="password" type="text"
-                                       class="form-control @error('nation') is-invalid @enderror" name="nation"
-                                       required>
+                                        <div class="col-md-6">
+                                            <input type="text"
+                                                   class="form-control @error('nation') is-invalid @enderror"
+                                                   name="nation" value="{{$user->nation ?? old('nation')}}" required
+                                                   data-parsley-length="[3,30]" data-parsley-trigger="keyup">
 
-                                @error('nation')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('nation')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="password-confirm"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Date Of Birth') }}</label>
+                                    <div class="form-group row">
+                                        <label for="password-confirm"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Date Of Birth') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="date" class="form-control"
-                                       name="dob" required>
+                                        <div class="col-md-6">
+                                            <input id="password-confirm" type="date" class="form-control"
+                                                   name="dob" value="{{$user->dob ?? old('dob')}}" required
+                                                   data-parsley-length="[3,30]" data-parsley-trigger="keyup">
 
-                                @error('dob')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('dob')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="password-confirm"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Education Background') }}</label>
+                                    <div class="form-group row">
+                                        <label for="password-confirm"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Education Background') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="text" class="form-control"
-                                       name="ed_bg" required>
+                                        <div class="col-md-6">
+                                            <input id="password-confirm" type="text" class="form-control"
+                                                   name="ed_bg" value="{{$user->ed_bg ?? old('ed_bg')}}" required
+                                                   data-parsley-length="[3,30]" data-parsley-trigger="keyup">
 
-                                @error('ed_bg')
-                                <span class="invalid-feedback" role="alert">
+                                            @error('ed_bg')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row">
-                            <label for="password-confirm"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Mode Of Contact') }}</label>
+                                    <div class="form-group row">
+                                        <label for="password-confirm"
+                                               class="col-md-4 col-form-label text-md-right">{{ __('Mode Of Contact') }}</label>
 
-                            <div class="col-md-6">
-                                <input list="contact-mode" class="form-control" name="contact_mode" required>
-                                <datalist id="contact-mode">
+                                        <div class="col-md-6">
+                                            <input list="contact-mode" class="form-control"
+                                                   name="contact_mode"
+                                                   value="{{$user->contact_mode ?? old('contact_mode')}}"
+                                                   required data-parsley-length="[3,30]" data-parsley-trigger="keyup">
+                                            <datalist id="contact-mode">
 
-                                </datalist>
-                                @error('contact_mode')
-                                <span class="invalid-feedback" role="alert">
+                                            </datalist>
+                                            @error('contact_mode')
+                                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            </div>
-                        </div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Submit') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                                    <div class="form-group row mb-0">
+                                        <div class="col-md-6 offset-md-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                {{ __('Submit') }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                 </div>
             </div>
         </div>
@@ -582,6 +622,8 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script>
     $(document).on('keyup change', '#phone,#email', function () {
         // $('#displayName').empty();
@@ -596,6 +638,11 @@
             ]);
     });
 </script>
-
+<script>
+    $(function () {
+        $('#myForm').parsley();
+    });
+</script>
+{{--@include('jsvalidation')--}}
 </body>
 </html>

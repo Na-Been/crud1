@@ -9,7 +9,6 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href=" https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Styles -->
     <style>
         /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
@@ -413,50 +412,15 @@
                 </span>
                 </div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{route('import.users')}}" enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="name"
-                                   class="col-md-4 col-form-label text-md-right">{{ __('Import File') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="name" type="file"
-                                       class="form-control @error('import_file') is-invalid @enderror"
-                                       name="import_file"
-                                       value="{{ old('import_file') }}" required autocomplete="name" autofocus>
-
-                                @error('import_file')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Submit') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
                 <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">S.N.</th>
-                        <th scope="col">name</th>
-                        <th scope="col">gender</th>
-                        <th scope="col">phone</th>
-                        <th scope="col">email</th>
-                        <th scope="col">address</th>
-                        <th scope="col">nation</th>
-                        <th scope="col">dob</th>
-                        <th scope="col">edu background</th>
-                        <th scope="col">contact mode</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Contact Mode</th>
+                        <th scope="col" colspan="3">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -464,14 +428,18 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>{{$user->name}}</td>
-                            <td>{{$user->gender}}</td>
                             <td>{{$user->phone}}</td>
                             <td>{{$user->email}}</td>
-                            <td>{{$user->address}}</td>
-                            <td>{{$user->nation}}</td>
-                            <td>{{$user->dob}}</td>
-                            <td>{{$user->ed_bg}}</td>
                             <td>{{$user->contact_mode}}</td>
+                            <td><a href="{{route('users.show',$user->id)}}">View</a></td>
+                            <td><a href="{{route('users.edit',$user->id)}}">Edit</a></td>
+                            <td>
+                                <form action="{{route('users.destroy',$user->id)}}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger" type="submit">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                     @endforelse

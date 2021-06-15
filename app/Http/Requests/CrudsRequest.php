@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CrudsRequest extends FormRequest
 {
@@ -24,10 +25,10 @@ class CrudsRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:5|max:255',
-            'gender' => 'required|min:5|max:255',
+            'name' => 'required|min:3|max:255',
+            'gender' => 'required|min:3|max:255',
             'phone' => 'required|min:5|max:255',
-            'email' => 'required|max:255|unique:cruds,email,' . $this->crud,
+            'email' => ['required', Rule::unique('cruds')->ignore($this->user)],
             'address' => 'required|min:5|max:255',
             'nation' => 'required|min:5|max:255',
             'dob' => 'required',

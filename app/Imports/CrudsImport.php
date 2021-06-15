@@ -16,15 +16,16 @@ class CrudsImport implements ToModel
     public function model(array $row)
     {
         return new Crud([
-            'name' => $row[1],
-            'gender' => $row[2],
-            'phone' => $row[3],
-            'email' => $row[4],
-            'address' => $row[5],
-            'nation' => $row[6],
-            'dob' => $row[7],
-            'ed_bg' => $row[8],
-            'contact_mode' => $row[9],
+            'id' => $row['S.N.'],
+            'name' => $row['Name'],
+            'gender' => $row['Gender'],
+            'phone' => $row['Phone'],
+            'email' => $row['Email'],
+            'address' => $row['Address'],
+            'nation' => $row['Nation'],
+            'dob' => $row['Date Of Birth'],
+            'ed_bg' => $row['Edu Background'],
+            'contact_mode' => $row['Contact Mode'],
         ]);
     }
 }

@@ -16,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('user/download', [\App\Http\Controllers\CrudController::class, 'download'])->name('download.users');
 Route::post('user/import', [\App\Http\Controllers\CrudController::class, 'importFile'])->name('import.users');
 Route::resource('users', \App\Http\Controllers\CrudController::class);

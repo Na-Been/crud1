@@ -3,15 +3,34 @@
 namespace App\Exports;
 
 use App\Models\Crud;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class CrudsExport implements FromCollection
+class CrudsExport implements FromCollection, WithHeadings
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return Collection
+     */
+
+    public function headings(): array
+    {
+        return [
+            'S.N.',
+            'Name',
+            'Gender',
+            'Phone',
+            'Email',
+            'Address',
+            'Nation',
+            'Date Of Birth',
+            'Edu Background',
+            'Contact Mode',
+        ];
+    }
+
     public function collection()
     {
-        return Crud::all();
+        return collect(Crud::getCrudData());
     }
 }
